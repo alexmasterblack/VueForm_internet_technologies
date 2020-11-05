@@ -5,13 +5,14 @@
 </template>
 
 <script>
+import { Vue, Component } from 'vue-property-decorator'
 import FormVue from "@/components/FormVue";
-export default {
-  name: "App",
+@Component({
   components: {
     FormVue
   }
-}
+})
+export default class App extends Vue {}
 </script>
 
 <style>
@@ -19,7 +20,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 500px;
+  height: 600px;
 }
 
 #app {

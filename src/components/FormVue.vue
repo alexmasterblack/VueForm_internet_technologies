@@ -3,54 +3,110 @@
     <h1>Form</h1>
     <div class="gender">
       <label>
-        <input type="radio"/>
+        <input type="radio" v-model="gender" value="Female"/>
       </label>
       <label>Female</label>
       <label>
-        <input type="radio"/>
+        <input type="radio" v-model="gender" value="Male"/>
       </label>
       <label>Male</label>
       <label>
-        <input type="radio"/>
+        <input type="radio" v-model="gender" value="Other"/>
       </label>
       <label>Other</label>
     </div>
     <div class="one">
       <label>
-        <input type="text" placeholder="First name" class="form_input"/>
+        <input type="text" placeholder="First name" v-model="first_name" class="form_input"/>
       </label>
       <label>First name</label>
     </div>
     <div class="one">
       <label>
-        <input type="text" placeholder="Second name" class="form_input"/>
+        <input type="text" placeholder="Second name" v-model="second_name" class="form_input"/>
       </label>
       <label>Second name</label>
     </div>
     <div class="one">
       <label>
-        <input type="number" placeholder="Second name" class="form_input"/>
+        <input type="number" placeholder="Age" v-model="age" class="form_input"/>
       </label>
       <label>Age</label>
     </div>
     <div class="one">
       <label>
-        <input type="text" placeholder="Number" class="form_input"/>
+        <input type="text" placeholder="Number" v-model="number" class="form_input"/>
       </label>
       <label>Number</label>
     </div>
-    <button class="form_button">Sign in</button>
+    <button type="submit" class="form_button" v-on:click="check = validate(name(first_name), name(second_name), phone(number), years(age), choice(gender))">Sign in</button>
+    <pre v-if="check">{{Data}}</pre>
+    <pre v-else>Incorrect input!</pre>
   </div>
 </template>
 
 <script>
-export default {
-  name: "FormVue"
+import { Component, Vue } from "vue-property-decorator";
+@Component
+export default class FormVue extends Vue {
+  check = false;
+  first_name = "";
+  second_name  = "";
+  number = "";
+  age = null;
+  gender = "";
+  validator_word = /[A-Z-a-z-А-Я-а-я]/;
+  validator_number = /[0-9]/;
+
+  validate(first_name, second_name, number, age, gender) {
+    return first_name && second_name && number && age && gender;
+  }
+
+  name(name) {
+    if (name !== "") {
+      if (this.validator_word.test(name) && name[0].toUpperCase() === name[0]) {
+        for (let i = 0; i < name.length; i++) {
+          if (!this.validator_word.test(name[i])) {
+            return false;
+          }
+        }
+        return true;
+      } else return false;
+    } else return false;
+  }
+
+  phone(number) {
+    if (number.length === 11 && number[0] === "8") {
+      for (let i = 0; i < number.length; i++) {
+        if (!this.validator_number.test(number[i])) {
+          return false;
+        }
+      }
+      return true;
+    } else return false;
+  }
+
+  years(age) {
+    return age >= 1 && age <= 100;
+  }
+
+  choice(gender) {
+    return gender !== "";
+  }
+
+  get Data() {
+    return {
+      first_name: this.first_name,
+      second_name: this.second_name,
+      gender: this.gender,
+      age: this.age,
+      number: this.number
+    };
+  }
 }
 </script>
 
 <style scoped>
-
 .form {
   width: 300px;
   padding: 50px;
@@ -87,6 +143,9 @@ export default {
   cursor: pointer;
   transition: 0.3s;
  }
+button:not(:active) {
+  transform: scale(0.95);
+}
 h1 {
   margin-top: 0;
   margin-bottom: 0;
